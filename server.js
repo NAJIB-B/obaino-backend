@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 require("dotenv").config()
 
-const app = require("./src/app")
+const app = require("./app")
 
 
 mongoose.connect(process.env.DATABASE)
