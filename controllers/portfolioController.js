@@ -24,6 +24,18 @@ const validateFile = (file) => {
   }
 };
 
+exports.getAPortfolio = catchAsync(async(req, res, next) => {
+  const portfolioId = req.params.portfolioId
+
+  const portfolio = await Portfolio.findById(portfolioId);
+
+  res.status(200).json({
+    message: "success",
+    portfolio
+  })
+
+})
+
 exports.getPortfolio = catchAsync(async(req, res, next) => {
 
   const portfolio = await Portfolio.findOne({user: req.user._id}) //.populate("services")

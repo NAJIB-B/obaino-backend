@@ -1,16 +1,36 @@
 const express = require("express")
+const cors = require("cors")
+const cookieParser = require('cookie-parser');
 
 const userRouter = require("./routes/userRoute")
 const portfolioRouter = require("./routes/portfolioRoute")
 const serviceRouter = require("./routes/serviceRoute")
 const bookRouter = require("./routes/bookRoute")
+const Portfolio = require("./models/portfolioModel")
 const AppError = require("./utils/appError")
 
 
 const app = express()
 
+
+app.use(cors())
+app.use(cookieParser())
+
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
+
+app.use("/home", async(req, res, next) => {
+
+
+  const portfolioId = process.env.PORTFOLIO_ID 
+
+  const portfolio = await Portfolio.findById(portfolioId);
+
+  res.status(200).json({
+    message: "success",
+    portfolio
+  })
+})
 
 app.use("/user", userRouter)
 app.use("/portfolio", portfolioRouter)

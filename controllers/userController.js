@@ -43,10 +43,17 @@ exports.signup = catchAsync(async(req, res, next) => {
   const user = await User.create(body)
 
   const token = signToken(user._id)
+
+    res.cookie('token', token, {
+    httpOnly: true,     
+    maxAge: 2 * 60 * 60 * 1000,
+  });
+
   user.password = undefined
 
   res.status(201).json({
     message: "success",
+    status: 201,
     token,
     user
   })
@@ -73,9 +80,15 @@ exports.login = catchAsync(async(req, res, next) => {
 
   const token = signToken(user._id)
 
+    res.cookie('token', token, {
+    httpOnly: true,     
+    maxAge: 2 * 60 * 60 * 1000,
+  });
+
   user.password = undefined
   res.status(200).json({
     message: "success",
+    status: 200,
     token,
     user
   })
