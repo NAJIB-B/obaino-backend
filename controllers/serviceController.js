@@ -77,6 +77,7 @@ exports.createService = catchAsync(async(req, res, next) => {
 
 exports.updateService = catchAsync(async(req, res, next) => {
   const serviceId = req.params.serviceId
+  console.log("this is the serviceId", serviceId)
 
   if (!req.file) {
     return next(new AppError("please upload and image", 400))

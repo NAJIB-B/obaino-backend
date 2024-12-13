@@ -9,25 +9,22 @@ const User = require("../models/userModel")
 
 
 exports.protect = catchAsync(async(req, res, next) => {
- const token = req.cookies.token;
-  
-  if (!token) {
-    return next(new AppError("Please login to access this endpoint", 401))
+
+
+  let token;
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
+  ) {
+    token = req.headers.authorization.split(" ")[1];
   }
 
+  if (!token) {
+    return next(new AppError(`Please login to access this endpoint ${JSON.stringify(req.headers)}` , 401))
+  }
 
-//  let token;
-//  if (
-//    req.headers.authorization &&
-//    req.headers.authorization.startsWith("Bearer")
-//  ) {
-//    token = req.headers.authorization.split(" ")[1];
-//  }
-//
-//  if (!token) {
-//    return next(new AppError("Please login to access this endpoint", 401))
-//  }
-//
+  console.log("this is the token here", token)
+
   const secret = process.env.JWT_SECRET
   const decoded = await promisify(jwt.verify)(token, secret)
 
