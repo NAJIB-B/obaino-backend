@@ -9,7 +9,7 @@ const serviceModel = new mongoose.Schema({
     type: String
   },
   image: {
-    type: Buffer
+    type: String
   }
 })
 

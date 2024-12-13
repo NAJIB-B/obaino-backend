@@ -3,6 +3,8 @@ const Joi = require("joi")
 const AppError = require("../utils/appError")
 const catchAsync = require("../utils/catchAsync")
 const Portfolio = require("../models/portfolioModel")
+const uploadImageToS3 = require("../utils/uploadImage")
+
 
 const portfolioSchema = Joi.object({
   name: Joi.string().required(),
@@ -38,7 +40,7 @@ exports.getAPortfolio = catchAsync(async(req, res, next) => {
 
 exports.getPortfolio = catchAsync(async(req, res, next) => {
 
-  const portfolio = await Portfolio.findOne({user: req.user._id}) //.populate("services")
+  const portfolio = await Portfolio.findOne({user: req.user._id}).populate("services").populate("books")
 
   res.status(200).json({
     message: "success",
@@ -86,8 +88,11 @@ exports.updatePortfolio = catchAsync(async(req, res, next) => {
 
   validateFile(req.file)
 
+  
+  const imageUrl = await uploadImageToS3(req.file, req.body.name)
+
   const data = {
-    [req.body.name]: req.file.buffer 
+    [req.body.name]: imageUrl
   }
 
 

@@ -4,6 +4,7 @@ const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
 const Book = require("../models/bookModel");
 const Portfolio = require("../models/portfolioModel");
+const uploadImageToS3 = require("../utils/uploadImage")
 
 const validateFile = (file) => {
   if (file.size <= 0) {
@@ -48,11 +49,16 @@ exports.createBook = catchAsync(async (req, res, next) => {
 
   validateFile(req.file);
 
+  const imageUrl = await uploadImageToS3(
+    req.file,
+    `${Date.now()}_${req.file.originalname}`,
+  );
+
   const data = {
     title: req.body.title,
     description: req.body.description,
     link: req.body.link,
-    image: req.file.buffer,
+    image: imageUrl,
   };
   const book = await Book.create(data);
 
@@ -72,7 +78,25 @@ exports.createBook = catchAsync(async (req, res, next) => {
 exports.updateBook = catchAsync(async (req, res, next) => {
   const bookId = req.params.bookId;
 
-  const book = await Book.findByIdAndUpdate(bookId, req.body, { new: true });
+  if (!req.file) {
+    return next(new AppError("please upload and image", 400));
+  }
+
+  validateFile(req.file);
+
+  const imageUrl = await uploadImageToS3(
+    req.file,
+    `${Date.now()}_${req.file.originalname}`,
+  );
+
+  const data = {
+    title: req.body.title,
+    description: req.body.description,
+    link: req.body.link,
+    image: imageUrl,
+  };
+
+  const book = await Book.findByIdAndUpdate(bookId, data, { new: true });
 
   res.status(200).json({
     message: "success",
@@ -84,10 +108,7 @@ exports.deleteBook = catchAsync(async (req, res, next) => {
   const bookId = req.params.bookId;
 
   const book = await Book.findByIdAndDelete(bookId);
-  await Portfolio.updateMany(
-    { books: bookId }, 
-    { $pull: { books: bookId } },
-  );
+  await Portfolio.updateMany({ books: bookId }, { $pull: { books: bookId } });
 
   res.status(204).json({
     message: "success",

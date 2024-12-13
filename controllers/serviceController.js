@@ -4,6 +4,7 @@ const AppError = require("../utils/appError")
 const catchAsync = require("../utils/catchAsync")
 const Service = require("../models/servicesModel")
 const Portfolio = require("../models/portfolioModel")
+const uploadImageToS3 = require("../utils/uploadImage")
 
 const validateFile = (file) => {
   if (file.size <= 0) {
@@ -49,10 +50,12 @@ exports.createService = catchAsync(async(req, res, next) => {
 
   validateFile(req.file)
 
+  const imageUrl = await uploadImageToS3(req.file, `${Date.now()}_${req.file.originalname}`)
+
   const data = {
     title: req.body.title,
     description: req.body.description,
-    image: req.file.buffer
+    image: imageUrl
   }
   const service = await Service.create(data)
 
@@ -75,7 +78,20 @@ exports.createService = catchAsync(async(req, res, next) => {
 exports.updateService = catchAsync(async(req, res, next) => {
   const serviceId = req.params.serviceId
 
-  const service = await Service.findByIdAndUpdate(serviceId, req.body, {new: true})
+  if (!req.file) {
+    return next(new AppError("please upload and image", 400))
+  }
+
+  validateFile(req.file)
+
+  const imageUrl = await uploadImageToS3(req.file, `${Date.now()}_${req.file.originalname}`)
+
+  const data = {
+    title: req.body.title,
+    description: req.body.description,
+    image: imageUrl 
+  }
+  const service = await Service.findByIdAndUpdate(serviceId, data, {new: true})
 
   res.status(200).json({
     message: "success",

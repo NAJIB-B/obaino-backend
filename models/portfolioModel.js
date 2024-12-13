@@ -6,40 +6,40 @@ const portfolioSchma = new mongoose.Schema({
     type: String,
   },
   topLeftImage: {
-    type: Buffer,
+    type: String,
   },
   topRightImage: {
-    type: Buffer,
+    type: String,
   },
 
   topCenterImg1: {
-    type: Buffer,
+    type: String,
   },
 
   topCenterImg2: {
-    type: Buffer,
+    type: String,
   },
   circleImg1: {
-    type: Buffer,
+    type: String,
   },
   circleImg2: {
-    type: Buffer,
+    type: String,
   },
 
   circleImg3: {
-    type: Buffer,
+    type: String,
   },
 
   circleImg4: {
-    type: Buffer,
+    type: String,
   },
 
   circleImg5: {
-    type: Buffer,
+    type: String,
   },
 
   circleImg6: {
-    type: Buffer,
+    type: String,
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
