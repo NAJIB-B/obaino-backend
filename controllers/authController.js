@@ -23,7 +23,6 @@ exports.protect = catchAsync(async(req, res, next) => {
     return next(new AppError(`Please login to access this endpoint ${JSON.stringify(req.headers)}` , 401))
   }
 
-  console.log("this is the token here", token)
 
   const secret = process.env.JWT_SECRET
   const decoded = await promisify(jwt.verify)(token, secret)
