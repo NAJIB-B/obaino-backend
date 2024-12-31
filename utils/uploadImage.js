@@ -22,9 +22,10 @@ const promisifiedUpload = (params) => {
 };
 
 const uploadImageToS3 = async (image, imageName) => {
+  const timestamp = Date.now()
   const params = {
     Bucket: process.env.AWS_BUCKET_NAME,
-    Key: `images/${imageName}`,
+    Key: `images/${imageName}${timestamp}`,
     Body: image.buffer,
     ContentType: image.mimetype,
     ACL: "public-read",
