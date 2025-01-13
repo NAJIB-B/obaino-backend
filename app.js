@@ -6,6 +6,7 @@ const userRouter = require("./routes/userRoute");
 const portfolioRouter = require("./routes/portfolioRoute");
 const serviceRouter = require("./routes/serviceRoute");
 const bookRouter = require("./routes/bookRoute");
+const emailRouter = require("./routes/emailRoute");
 const Portfolio = require("./models/portfolioModel");
 const AppError = require("./utils/appError");
 
@@ -36,6 +37,8 @@ app.use("/user", userRouter);
 app.use("/portfolio", portfolioRouter);
 app.use("/service", serviceRouter);
 app.use("/book", bookRouter);
+app.use("/email", emailRouter);
+
 
 app.all("*", (req, res, next) => {
   return next(
